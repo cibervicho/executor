@@ -33,10 +33,14 @@ st.line_chart(chart_data)
 
 
 st.write("Now, displaying dots in a map")
-map_data = pd.DataFrame(
-    np.random.randn(1000, 2) / [50, 50] + [37.76, -122.4],
-    columns=['lat', 'lon'])
-st.map(map_data)
+#map_data = pd.DataFrame(
+#    np.random.randn(1000, 2) / [50, 50] + [37.76, -122.4],
+#    columns=['lat', 'lon'])
+#st.map(map_data)
+d = {"lat": [20.688640], "lon":[-103.351017]}
+df = pd.DataFrame.from_dict(d)
+with st.expander("map"):
+    st.map(df, size=2, use_container_width=False, zoom=10)
 
 
 st.write("Using widgets")
