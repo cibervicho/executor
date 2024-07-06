@@ -1,0 +1,11 @@
+hello:
+  command: python hello.py {argument}
+  arguments:
+    argument: hellos
+
+bye:
+  command: python hello.py {argument}
+  arguments:
+    argument: bye
+  dependencies:
+    - hello
