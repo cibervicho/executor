@@ -5,7 +5,14 @@ hello:
 
 bye:
   command: python hello.py {argument}
+  enabled: False
   arguments:
     argument: bye
   dependencies:
     - hello
+
+hello2:
+  command: python hello.py hello
+  enabled: False  # Only deploy if CONDITION environment variable is set to True
+  dependencies:
+    - bye
