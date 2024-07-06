@@ -1,7 +1,7 @@
 hello:
   command: python hello.py {argument}
   arguments:
-    argument: hellos
+    argument: hello
 
 bye:
   command: python hello.py {argument}

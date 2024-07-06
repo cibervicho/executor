@@ -5,6 +5,7 @@ This script allows defining build tasks in a YAML file and executing them
 based on dependencies and conditions.
 """
 import argparse
+import datetime
 import os
 import subprocess
 import sys
@@ -52,8 +53,23 @@ class Task:
         # print(f" --> command: {self.command}")
         formatted_command = self.command.format(**self.arguments)
         # print(f" --> formatted_command: {formatted_command}")
-        process = subprocess.Popen(formatted_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        output, error = process.communicate()
+        with open(f"build_script_log.txt", "a") as log_file:  # Open log file in append mode
+            process = subprocess.Popen(formatted_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            output, error = process.communicate()
+            timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Get current timestamp
+            log_file.write(f"\n** Task: {self.name} ({timestamp}) **\n")  # Include timestamp
+            log_file.write(f"Command: {formatted_command}\n")
+            log_file.write(f"Standard Output:\n")
+            prefix = "   "  # Define prefix string with spaces
+            for line in output.decode().splitlines():
+                log_file.write(f"{prefix}{line}\n")  # Prepend prefix to each line
+            if error:
+                log_file.write(f"Standard Error:\n")
+                for line in error.decode().splitlines():
+                    log_file.write(f"{prefix}{line}\n")  # Prepend prefix to each line
+            log_file.write("\n")
+            log_file.write(50*"-")
+            log_file.write("\n")
         return process.returncode, output.decode(), error.decode()
 
 
