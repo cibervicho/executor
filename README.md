@@ -22,6 +22,32 @@
 - Support optional arguments for tasks (arguments).
 - Support task dependencies for defining execution order (dependencies).
 
+**`executor`'s grammar**
+
+The `executor.py` script doesn't define a formal grammar in the traditional sense. However, it does establish a specific syntax for defining tasks within a YAML file:
+
+**Task Definition:**
+
+* Each task is defined as a key-value pair within the YAML dictionary. The key represents the task name (string).
+* The value is a dictionary containing optional and required keys for defining the task's behavior.
+
+**Required Key:**
+
+* `command` (string): This key specifies the command to be executed for the task. It can include placeholders denoted by curly braces (`{}`) for arguments.
+
+**Optional Keys:**
+
+* `enabled` (boolean, default: True): This key indicates whether the task is enabled for execution.
+* `arguments` (dictionary): This key defines arguments to be passed to the command. The dictionary keys represent argument names, and the values are the corresponding argument values (strings).
+* `dependencies` (list of strings): This key lists task names that this task depends on. The task will only be executed if all its dependencies are completed and enabled.
+
+**Additional Notes:**
+
+* The script uses namedtuples (`TaskDef`) to represent tasks internally. This provides type checking and structure for task definitions.
+* The script validates the YAML structure for required keys and data types during script execution.
+
+**Overall, the syntax for defining tasks in the YAML file is relatively simple and human-readable.** It offers a clear way to define task commands, arguments, dependencies, and enabled/disabled states.
+
 **How to Use executor**
 
 1. **Create and activate a virtual environment:**
