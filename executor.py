@@ -226,14 +226,25 @@ def execute_script(script_file, context):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Execute tasks defined in a YAML script")
-    parser.add_argument("script", help="YAML file containing the script definition.")
+    parser.add_argument("script", nargs="?", help="YAML file containing the script definition.")
     parser.add_argument("-e", "--env", help="Environment variable name containing script path (optional).")
-    parser.add_argument("--no-stop", action="store_true", help="Continue execution even if a task fails. Defaults to false.")
+    parser.add_argument("--no-stop", action="store_true", help="Continue execution even if a task fails.")
     args = parser.parse_args()
 
+    # If script argument is not provided, check for environment variable
+    if not args.script:
+        script_path = os.environ.get("EXECUTOR_SCRIPT_PATH")
+        if script_path:
+            args.script = script_path
+        else:
+            print("Error: Script path not provided and environment variable EXECUTOR_SCRIPT_PATH is not set.")
+            exit(1)
+
     # Use environment variable or script argument for build script file
-    script_file = args.env and os.environ.get(args.env) or args.script
+    script_file = args.script
     # print(f" --> script_file: {script_file}")
+    # print(f" --> args.env: {args.env}")
+    # print(f" --> os.environ.get(args.env): {os.environ.get(args.env)}")
 
     # Add environment variables or other context values here
     context = {
