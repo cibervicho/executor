@@ -22,7 +22,7 @@
 - Support optional arguments for tasks (arguments).
 - Support task dependencies for defining execution order (dependencies).
 
-**`executor`'s grammar**
+**`executor`'s Grammar**
 
 The `executor.py` script doesn't define a formal grammar in the traditional sense. However, it does establish a specific syntax for defining tasks within a YAML file:
 
