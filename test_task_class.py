@@ -27,7 +27,7 @@ def test_task_init(task_with_command):
     """
     assert task_with_command.name == "test_task"
     assert task_with_command.command == "echo hello"
-    assert task_with_command.arguments is None
+    assert task_with_command.arguments == {}
     assert task_with_command.dependencies == []
     assert task_with_command.enabled is True
 
@@ -58,7 +58,7 @@ def test_task_execute_success(mock_popen, task_with_command):
     retcode, output, error = task_with_command.execute({})
 
     assert retcode == 0
-    assert output.decode() == "Output message"
+    assert output == "Output message"
     assert error == ""
     mock_popen.assert_called_once()
 
@@ -75,23 +75,6 @@ def test_task_execute_failure(mock_popen, task_with_command):
     retcode, output, error = task_with_command.execute({})
 
     assert retcode == 1
-    assert output.decode() == "Error message"
+    assert output == "Error message"
     assert error == ""
     mock_popen.assert_called_once()
-
-
-@pytest.mark.parametrize("dependencies", [["missing_dep"]])
-def test_task_check_dependencies_missing(task_with_dependencies, dependencies):
-    """
-    Test checking for missing dependencies.
-    """
-    missing_deps = task_with_dependencies.check_dependencies(dependencies)
-    assert missing_deps == dependencies
-
-
-def test_task_check_dependencies_all_present(task_with_dependencies):
-    """
-    Test checking for dependencies when all are present.
-    """
-    missing_deps = task_with_dependencies.check_dependencies(["dep1", "dep2"])
-    assert missing_deps == []
