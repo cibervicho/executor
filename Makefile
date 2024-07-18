@@ -36,3 +36,6 @@ run-env: clean build
 # Run all unit tests using pytest
 test:
 	pytest test_script_functions.py test_task_class.py -v
+
+docker-build:
+	docker build -t executor-app .
