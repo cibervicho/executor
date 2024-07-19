@@ -4,39 +4,33 @@ FROM python:3.12-slim as builder
 # Update package lists
 RUN apt-get update && apt-get upgrade -y
 
-# Install build essentials and git
-RUN apt-get install -y build-essential git vim
+# Install build essentials to have make available
+RUN apt-get install -y build-essential
 
 # Set working directory
 WORKDIR /app/executor
 
-# Clone the executor repository
-# COPY https://github.com/cibervicho/executor.git .
+# Copy required files to build container
 COPY requirements.txt Makefile executor.py ./
 
-# Install requirements from requirements.txt (optional)
+# Install requirements from requirements.txt
 RUN pip install -r requirements.txt
 
-# Build the executor binary (optional)
-# Assuming a Makefile with a 'build' target exists
+# Build the executor binary
 RUN make build
 
 
-FROM bitnami/python:3.12.4-debian-12-r4
+# Target executor Image
+FROM python:3.12-slim
 
-# Copy the executor binary to the container (if built)
-COPY --from=builder /app/executor/dist/executor /app/executor/executor
+# Installing vim for easier navigation of files
+RUN apt-get update && apt-get install vim -y
 
-# Copy the hello directory and its contents (optional)
-COPY hello /app/executor/hello
+# Copy the executor binary to the container
+COPY --from=builder /app/executor/dist/executor /usr/local/bin/executor
 
-# Set the working directory for execution (optional)
+# Set the working directory for execution
 WORKDIR /app/executor
 
-# Entrypoint command (optional)
-# Replace with your actual execution command
-CMD ["executor", "hello/hello.yaml"]
-
-
-#TO Build:
-    # docker build -t executor-app .
+# Entrypoint command
+CMD ["executor"]

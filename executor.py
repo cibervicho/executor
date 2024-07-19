@@ -11,6 +11,7 @@ import subprocess
 import yaml
 
 from collections import namedtuple
+from sys import exit
 from yaml import YAMLError
 
 
@@ -76,7 +77,7 @@ class Task:
         # print(f" --> command: {self.command}")
         formatted_command = self.command.format(**self.arguments)
         # print(f" --> formatted_command: {formatted_command}")
-        with open(f"executor_log.txt", "a") as log_file:  # Open log file in append mode
+        with open(f"log/executor_log.txt", "a") as log_file:  # Open log file in append mode
             process = subprocess.Popen(formatted_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             output, error = process.communicate()
             timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -118,9 +119,11 @@ def read_script(filename):
         with open(filename, 'r') as file:
             return yaml.safe_load(file)
     except FileNotFoundError:
-        raise FileNotFoundError(f"Script file '{filename}' not found.")
+        print(f"Error: Script file '{filename}' not found.")
+        exit(1)
     except yaml.YAMLError as e:
-        raise YAMLError(f"Error parsing YAML file '{filename}': {e}")
+        print(f"Error: Error parsing YAML file '{filename}': {e}")
+        exit(1)
 
 
 def validate_script(script):
