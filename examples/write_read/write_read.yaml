@@ -1,0 +1,28 @@
+write:
+  command: python write_to_file.py {arg1} {arg2}
+  arguments:
+    arg1: test.txt
+    arg2: "This is a test"
+
+testing:
+  command: test {flag1} {argument}
+  enabled: True
+  arguments:
+    flag1: -f
+    argument: test.txt
+  dependencies:
+    - write
+
+read:
+  command: python read_from_file.py {arg1} {arg2}
+  enabled: True
+  arguments:
+    arg1: test.txt
+    arg2: "This is a test"
+  dependencies:
+    - testing
+
+tearDown:
+  command: rm test.txt
+  dependencies:
+    - testing

@@ -16,7 +16,7 @@ from yaml import YAMLError
 
 
 class Task:
-    def __init__(self, name, command, arguments={}, dependencies=[], enabled=True):
+    def __init__(self, name, command, arguments={}, dependencies=[], enabled=True, test_dir=""):
         """
         Initializes a Task object.
 
@@ -32,6 +32,7 @@ class Task:
         self.arguments = arguments
         self.dependencies = dependencies
         self.enabled = enabled
+        self.test_dir = test_dir
 
     def check_dependencies(self, completed_tasks, tasks):
         """
@@ -66,7 +67,6 @@ class Task:
         Returns:
             tuple: A tuple containing the process return code, standard output, and standard error (if any).
         """
-        # print(f"self.enabled = {self.enabled}")
         if not self.enabled:
             print(f"Task '{self.name}' skipped since it is disabled.")
             retcode = -1    # return code defined for skipped task
@@ -74,10 +74,12 @@ class Task:
             error = ""
             return retcode, output, error
 
-        # print(f" --> command: {self.command}")
+        saved_dir = os.getcwd()
+        os.chdir(self.test_dir)
+
         formatted_command = self.command.format(**self.arguments)
-        # print(f" --> formatted_command: {formatted_command}")
-        with open(f"log/executor_log.txt", "a") as log_file:  # Open log file in append mode
+        print(f"Task '{self.name}' command: {formatted_command}")
+        with open(f"{saved_dir}/log/executor_log.txt", "a") as log_file:  # Open log file in append mode
             process = subprocess.Popen(formatted_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             output, error = process.communicate()
             timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -94,7 +96,17 @@ class Task:
             log_file.write("\n")
             log_file.write(50*"-")
             log_file.write("\n")
+
+        os.chdir(saved_dir)
         return process.returncode, output.decode(), error.decode()
+
+    def __str__(self):
+        return f"Task Name: {self.name}\n \
+                Command: {self.command}\n \
+                Arguments: {self.arguments}\n \
+                Dependencies: {self.dependencies}\n \
+                Enabled: {self.enabled}\n \
+                Test Directory: {self.test_dir}"
 
 
 def read_script(filename):
@@ -203,11 +215,9 @@ def execute_script(script_file, context):
     tasks = get_all_tasks(build_script)
 
     completed_tasks = set()
+    current_dir = os.path.dirname(script_file)
     for task_name, task_def in build_script.items():
-        # Split command into Python binary and script path
-        command_parts = task_def['command'].split(" ", 1)
-        script_path = os.path.join(os.path.dirname(script_file), command_parts[1])  # Modify script path
-        task_def['command'] = f"{command_parts[0]} {script_path}"  # Reconstruct command
+        task_def['test_dir'] = os.path.join(os.getcwd(), current_dir)
 
         task = Task(task_name, **task_def)
 
@@ -230,7 +240,6 @@ def execute_script(script_file, context):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Execute tasks defined in a YAML script")
     parser.add_argument("script", nargs="?", help="YAML file containing the script definition.")
-    parser.add_argument("-e", "--env", help="Environment variable name containing script path (optional).")
     parser.add_argument("--no-stop", action="store_true", help="Continue execution even if a task fails.")
     args = parser.parse_args()
 
@@ -245,14 +254,10 @@ if __name__ == "__main__":
 
     # Use environment variable or script argument for build script file
     script_file = args.script
-    # print(f" --> script_file: {script_file}")
-    # print(f" --> args.env: {args.env}")
-    # print(f" --> os.environ.get(args.env): {os.environ.get(args.env)}")
 
     # Add environment variables or other context values here
     context = {
         "no_stop": args.no_stop,
     }
-    # print(f" --> context.no_stop = {context.get('no_stop')}")
 
     execute_script(script_file, context)

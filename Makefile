@@ -60,3 +60,5 @@ docker-run:
 docker-clean:
 	sudo docker rmi executor-app
 	sudo docker builder prune -f
+
+# TODO: Pass those examples to the container through the make command
