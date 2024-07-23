@@ -1,4 +1,4 @@
-# **executor - A Simple Script DSL**
+# **executor - A Simple DSL**
 
 ## **What is executor?**
 
