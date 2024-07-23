@@ -1,5 +1,6 @@
 # test_task_class.py
 
+import os
 import pytest
 from unittest.mock import patch
 
@@ -30,6 +31,7 @@ def test_task_init(task_with_command):
     assert task_with_command.arguments == {}
     assert task_with_command.dependencies == []
     assert task_with_command.enabled is True
+    assert task_with_command.test_dir == ""
 
 
 def test_task_with_arguments(task_with_arguments):
@@ -55,6 +57,7 @@ def test_task_execute_success(mock_popen, task_with_command):
     mock_process.returncode = 0
     mock_process.communicate.return_value = (b"Output message", b"")
 
+    task_with_command.test_dir = os.getcwd()
     retcode, output, error = task_with_command.execute({})
 
     assert retcode == 0
@@ -72,6 +75,7 @@ def test_task_execute_failure(mock_popen, task_with_command):
     mock_process.returncode = 1
     mock_process.communicate.return_value = (b"Error message", b"")
 
+    task_with_command.test_dir = os.getcwd()
     retcode, output, error = task_with_command.execute({})
 
     assert retcode == 1

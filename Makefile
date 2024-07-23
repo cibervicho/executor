@@ -11,14 +11,14 @@ TARGET ?= hello/hello.yaml
 # Help target
 help:
 	@echo "Available targets:"
-	@echo "  clean		- Clean build artifacts"
-	@echo "  build		- Build the executor binary"
-	@echo "  run		- Run the executor script (requires script.yaml)"
-	@echo "  test		- Run the unit tests using pytest"
+	@echo "  clean		- Cleans build artifacts"
+	@echo "  build		- Builds the executor binary"
+	@echo "  run		- Runs the executor script (requires script.yaml)"
+	@echo "  test		- Runs the unit tests using pytest"
 	@echo ""
-	@echo "  docker-build	- Builds the executor-app docker image"
-	@echo "  docker-run	- Run the executor-app docker container"
 	@echo "  docker-clean	- Removes the executor-app and intermediate docker images"
+	@echo "  docker-build	- Builds the executor-app docker image"
+	@echo "  docker-run	- Runs the executor-app docker container"
 
 # Clean target
 clean:
@@ -37,7 +37,7 @@ run: clean build
 
 # Define a target to run the script with an environment variable
 run-env: clean build
-	export EXECUTOR_SCRIPT_PATH=$(LOCAL_SCRIPT_YAML) && ./dist/executor -e EXECUTOR_SCRIPT_PATH
+	export EXECUTOR_SCRIPT_PATH=$(LOCAL_SCRIPT_YAML) && ./dist/executor
 
 # Run all unit tests using pytest
 test:
@@ -45,10 +45,18 @@ test:
 
 
 ### Docker Stuff ###
-docker-build:
+docker-clean:
+ifeq ($(shell docker images -f reference=executor-app:latest | grep -wc executor-app),0)
+  # Image doesn't exist, skip cleaning
+else
+	sudo docker rmi executor-app
+	sudo docker builder prune -f
+endif
+
+docker-build: docker-clean
 	sudo docker build -t executor-app .
 
-docker-run:
+docker-run: docker-build
 	@echo " --> $(TARGET)"
 	sudo docker run \
 		--interactive --tty --rm \
@@ -57,8 +65,10 @@ docker-run:
 		--env EXECUTOR_SCRIPT_PATH=$(TARGET) \
 		executor-app
 
-docker-clean:
-	sudo docker rmi executor-app
-	sudo docker builder prune -f
-
-# TODO: Pass those examples to the container through the make command
+# To execute the container with an example test just run it as follows:
+# 	1. make docker-run TARGET=write_read/write_read.yaml
+#   2. make docker-run
+#
+# Notice that, in 1, we are omitting the 'examples' directory where the test
+# resides.
+# In 2, we are using the default 'hello world' example.

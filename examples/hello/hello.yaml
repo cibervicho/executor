@@ -11,9 +11,13 @@ bye:
   dependencies:
     - hello
 
-hello2:
-  command: python hello.py hello
-  enabled: True
+echo:
+  command: echo $PATH
   dependencies:
     - hello
     - bye
+
+release:
+  command: cat {release_filename}
+  arguments:
+    release_filename: /etc/os-release

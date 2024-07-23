@@ -132,10 +132,13 @@ def read_script(filename):
             return yaml.safe_load(file)
     except FileNotFoundError:
         print(f"Error: Script file '{filename}' not found.")
-        exit(1)
+        #exit(1)
+        raise FileNotFoundError(f"Error: Script file '{filename}' not found.")
+
     except yaml.YAMLError as e:
         print(f"Error: Error parsing YAML file '{filename}': {e}")
-        exit(1)
+        #exit(1)
+        raise YAMLError(f"Error: Error parsing YAML file '{filename}': {e}")
 
 
 def validate_script(script):
