@@ -5,7 +5,7 @@ hello:
 
 bye:
   command: python hello.py {argument}
-  enabled: True
+  enabled: False
   arguments:
     argument: bye
   dependencies:
