@@ -1,5 +1,5 @@
 # Base image for Python environment
-FROM python:3.12-slim as builder
+FROM python:3.12-slim AS builder
 
 # Update package lists
 RUN apt-get update && apt-get upgrade -y

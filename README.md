@@ -60,7 +60,14 @@ There are 2 different ways to use executor:
 
 If you still need to install Docker, you can follow the instructions in the [official documentation](https://docs.docker.com/engine/install/).
 
-This is the easiest way to try `executor`.
+This is the easiest way to try `executor`. But first you need to make sure to build the Docker image:
+```bash
+make docker-clean
+
+make docker-build
+```
+
+Once this is done, you can then follow the next steps:
 
 1. **Run the command with `make`**
    ```bash
@@ -68,7 +75,7 @@ This is the easiest way to try `executor`.
    ```
    By doing this, the Makefile will build the required image with all it's dependencies, and at the end, will run the following command:
    ```bash
-   sudo docker run \
+   sudo docker-run \
         --interactive --tty --rm \
         --volume ./examples:/app/executor \
         --volume ./log:/app/executor/log \
