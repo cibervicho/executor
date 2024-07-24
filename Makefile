@@ -56,7 +56,7 @@ endif
 docker-build: docker-clean
 	sudo docker build -t executor-app .
 
-docker-run: docker-build
+docker-run: #docker-build
 	@echo " --> $(TARGET)"
 	sudo docker run \
 		--interactive --tty --rm \

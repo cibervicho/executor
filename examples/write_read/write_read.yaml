@@ -13,6 +13,13 @@ testing:
   dependencies:
     - write
 
+showing:
+  command: cat {filename}
+  arguments:
+    filename: test.txt
+  dependencies:
+    - testing
+
 read:
   command: python read_from_file.py {arg1} {arg2}
   enabled: True

@@ -31,6 +31,10 @@ RUN apt-get update && \
 
 # Copy the executor and binaries required to the container
 COPY --from=builder /app/executor/dist/executor /usr/local/bin/executor
+COPY --from=builder /app/executor/requirements.txt /app/executor/requirements.txt
+
+# Install requirements from requirements.txt
+RUN pip install -r /app/executor/requirements.txt
 
 # Set the working directory for execution
 WORKDIR /app/executor

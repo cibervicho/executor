@@ -2,30 +2,6 @@ import sys
 import time
 from gmpy2 import mpz
 
-#def calculate_factorial(n):
-#  """
-#  Calculates the factorial of a given number.
-#
-#  Args:
-#      n (int): The non-negative integer for which to calculate the factorial.
-#
-#  Returns:
-#      int: The factorial of n.
-#
-#  Raises:
-#      ValueError: If n is negative.
-#  """
-#  if n < 0:
-#    raise ValueError("Factorial is not defined for negative numbers.")
-#  
-#  # Simulate a time-consuming calculation using factorial and a loop
-#  result = 1
-#  for i in range(1, n + 1):
-#    result *= i
-#    # Simulate additional workload with a small sleep (adjust as needed)
-#    time.sleep(0.001)
-#  return result
-
 def calculate_factorial(n):
   """
   Calculates the factorial of a given number using gmpy2 for large integers.
