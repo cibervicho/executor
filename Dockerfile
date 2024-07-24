@@ -23,10 +23,13 @@ RUN make build
 # Target executor Image
 FROM python:3.12-slim
 
-# Installing vim for easier navigation of files
-RUN apt-get update && apt-get install vim -y
+# Installing vim for easier navigation of files and compilers
+RUN apt-get update && \
+    apt-get install \
+        vim \
+        gcc -y
 
-# Copy the executor binary to the container
+# Copy the executor and binaries required to the container
 COPY --from=builder /app/executor/dist/executor /usr/local/bin/executor
 
 # Set the working directory for execution

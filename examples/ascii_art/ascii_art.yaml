@@ -1,0 +1,28 @@
+validating:
+  command: test {flag1} {argument}
+  enabled: True
+  arguments:
+    flag1: -f
+    argument: ascii_art.c
+
+compilation:
+  command: gcc {filename} -o {binary}
+  arguments:
+    filename: ascii_art.c
+    binary: ascii_generator
+  dependencies:
+    - validating
+
+execution:
+  command: ./{binary}
+  arguments:
+    binary: ascii_generator
+  dependencies:
+    - compilation
+
+cleanup:
+  command: rm {binary}
+  arguments:
+    binary: ascii_generator
+  dependencies:
+    - compilation

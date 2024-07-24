@@ -1,0 +1,25 @@
+factorial-1:
+  command: python factorial.py {argument}
+  arguments:
+    argument: 1
+
+factorial-10:
+  command: python factorial.py {argument}
+  arguments:
+    argument: 10
+  dependencies:
+    - factorial-1
+
+factorial-100:
+  command: python factorial.py {argument}
+  arguments:
+    argument: 100
+  dependencies:
+    - factorial-10
+
+factorial-1000:
+  command: python factorial.py {argument}
+  arguments:
+    argument: 1000
+  dependencies:
+    - factorial-100
